@@ -1,5 +1,5 @@
 class Spree::Admin::UserPasswordsController < Devise::PasswordsController
-  helper 'spree/base'
+  helper 'spree/admin/base'
 
   include Spree::Core::ControllerHelpers::Auth
   include Spree::Core::ControllerHelpers::Common

@@ -27,24 +27,43 @@ module Spree
       has_spree_role?('admin')
     end
 
+    def self.send_reset_admin_password_instructions(attributes = {})
+      recoverable = find_or_initialize_with_errors(reset_password_keys, attributes, :not_found)
+      recoverable.send_reset_admin_password_instructions if recoverable.persisted?
+      recoverable
+    end
+
+    def send_reset_admin_password_instructions
+      token = set_reset_password_token
+      send_reset_admin_password_instructions_notification(token)
+
+      token
+    end
+
+    def send_reset_admin_password_instructions_notification(token)
+      send_devise_notification(:reset_admin_password_instructions, token, {})
+    end
+
     protected
-      def password_required?
-        !persisted? || password.present? || password_confirmation.present?
-      end
+
+    def password_required?
+      !persisted? || password.present? || password_confirmation.present?
+    end
 
     private
 
-      def set_login
-        # for now force login to be same as email, eventually we will make this configurable, etc.
-        self.login ||= self.email if self.email
-      end
+    def set_login
+      # for now force login to be same as email, eventually we will
+      # make this configurable, etc.
+      self.login ||= email if email
+    end
 
-      def scramble_email_and_password
-        self.email = SecureRandom.uuid + "@example.net"
-        self.login = self.email
-        self.password = SecureRandom.hex(8)
-        self.password_confirmation = self.password
-        self.save
-      end
+    def scramble_email_and_password
+      self.email = SecureRandom.uuid + '@example.net'
+      self.login = email
+      self.password = SecureRandom.hex(8)
+      self.password_confirmation = password
+      save
+    end
   end
 end

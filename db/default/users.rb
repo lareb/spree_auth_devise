@@ -18,6 +18,15 @@ def prompt_for_admin_password
   password
 end
 
+def prompt_for_admin_first_name
+  first_name = ask('First Name: ') do |q|
+      q.echo = true
+      q.whitespace = :strip
+    end
+    first_name = 'Admin' if first_name.blank?
+    return first_name
+end
+
 def prompt_for_admin_email
   if ENV['ADMIN_EMAIL']
     email = ENV['ADMIN_EMAIL'].dup
@@ -39,7 +48,7 @@ def create_admin_user
     email = 'spree@example.com'
   else
     puts 'Create the admin user (press enter for defaults).'
-    #name = prompt_for_admin_name unless name
+    first_name = prompt_for_admin_first_name #unless name
     email = prompt_for_admin_email
     password = prompt_for_admin_password
   end
@@ -47,6 +56,8 @@ def create_admin_user
     :password => password,
     :password_confirmation => password,
     :email => email,
+    :first_name => first_name,
+    :phone => "9876543210"
     :login => email
   }
 

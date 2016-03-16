@@ -57,7 +57,7 @@ def create_admin_user
     :password_confirmation => password,
     :email => email,
     :first_name => first_name,
-    :phone => "9876543210"
+    :phone => "9876543210",
     :login => email
   }
 
